@@ -50,5 +50,5 @@ export default defineNuxtConfig({
 
   
 
-  modules: ["@nuxtjs/i18n", 'shadcn-nuxt', '@vueuse/nuxt'],
+  modules: ["@nuxtjs/i18n", 'shadcn-nuxt', '@vueuse/nuxt', 'nuxt-lucide-icons'],
 })
