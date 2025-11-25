@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  css:[
+  css: [
     "~/assets/css/main.css",
   ],
 
@@ -31,24 +31,24 @@ export default defineNuxtConfig({
     },
   },
 
-    shadcn: {
-      /**
-       * Prefix for all the imported component.
-       * @default "Ui"
-       */
-      prefix: '',
-      /**
-       * Directory that the component lives in.
-       * Will respect the Nuxt aliases.
-       * @link https://nuxt.com/docs/api/nuxt-config#alias
-       * @default "@/components/ui"
-       */
-      componentDir: '@/components/ui'
-    },
+  shadcn: {
+    /**
+     * Prefix for all the imported component.
+     * @default "Ui"
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * Will respect the Nuxt aliases.
+     * @link https://nuxt.com/docs/api/nuxt-config#alias
+     * @default "@/components/ui"
+     */
+    componentDir: '@/components/ui'
+  },
 
-  
 
-  
 
-  modules: ["@nuxtjs/i18n", 'shadcn-nuxt', '@vueuse/nuxt', 'nuxt-lucide-icons'],
+
+
+  modules: ["@nuxtjs/i18n", 'shadcn-nuxt', '@vueuse/nuxt', 'nuxt-lucide-icons', '@tresjs/nuxt', '@nuxt/devtools'],
 })
