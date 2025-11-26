@@ -161,12 +161,16 @@
             </div>
 
             <div class="w-full h-full bg-transparent z-0">
-                <TresCanvas shadows window-size v-bind="rendererSettings" :tone-mapping="currentToneMapping"
-                    :antialias="rendererSettings.antialias" :alpha="rendererSettings.alpha"
-                    :power-preference="rendererSettings.powerPreference" clearColor="#FFFFFF" @ready="onReady">
-                    <modelLoader v-if="show3D" :startCamera="moveCamera"
-                        :modelURL="'/models/free_porsche_911_carrera_4s/scene.gltf'" :position="{ x: 0, y: 0, z: 0 }" />
-                </TresCanvas>
+                <ClientOnly>
+                    <TresCanvas v-if="show3D" shadows window-size v-bind="rendererSettings"
+                        :tone-mapping="currentToneMapping" :antialias="rendererSettings.antialias"
+                        :alpha="rendererSettings.alpha" :power-preference="rendererSettings.powerPreference"
+                        clearColor="#FFFFFF" @ready="onReady">
+                        <modelLoader :startCamera="moveCamera"
+                            :modelURL="'/models/free_porsche_911_carrera_4s/scene.gltf'"
+                            :position="{ x: 0, y: 0, z: 0 }" />
+                    </TresCanvas>
+                </ClientOnly>
             </div>
 
             <CarCategories :selectedCategory="CategoryRef" ref="CatRef" />
@@ -175,8 +179,9 @@
 
             <Header ref="header" />
 
-            <button type="button" class="absolute bottom-4 left-4  opacity-0 translate-y-10
-         w-16 h-16 
+            <button type="button" class="absolute bottom-4 left-0 lg:left-4  opacity-0 translate-y-10
+         w-8 h-8 
+         lg:w-16 lg:h-16
          rounded-full 
          border border-blue-500 
          text-blue-500 
