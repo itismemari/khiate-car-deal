@@ -1,13 +1,32 @@
     <script setup>
-    import { Search } from 'lucide-vue-next';
+    import { ArrowBigLeftDash, ArrowBigRightDash, Search } from 'lucide-vue-next';
     import { ACESFilmicToneMapping } from 'three'
     import CarCategories from '~/components/carCategories.vue';
+    const cars = [
+        {
+            name: "Economic",
+            description: "Economic cars are affordable and fuel-efficient, ideal for daily commuting and city driving.",
+            price: "$20,000 - $40,000",
+            features: ["Fuel-efficient", "Affordable", "Compact size"],
+            models: '/models/free_1972_datsun_240k_gt/scene.gltf',
+            position: { x: 0, y: 0, z: 0 }
+        },
+        {
+            name: "sports",
+            description: "Mid-size cars offer a balance of comfort, space, and performance, suitable for families and long trips.",
+            price: "$30,000 - $50,000",
+            features: ["Spacious interior", "Good fuel economy", "Comfortable ride"],
+            models: '/models/free_porsche_911_carrera_4s/scene.gltf',
+            position: { x: 0, y: 0, z: 0 }
+        },
+    ]
 
-    const { $gsap, $ScrollTrigger } = useNuxtApp()
+    const { $gsap } = useNuxtApp()
 
+    const currentCarIndex = ref(0);
     const moveCamera = ref(false);
     const TextRef = ref(null);
-    const CategoryRef = ref("Economic");
+    const CategoryRef = ref(cars[0].name);
     const header = ref(null);
     const zoomRef = ref(null);
     const zoomIn = ref(false);
@@ -16,6 +35,7 @@
 
     const CatRef = ref(null);
     const DetailsRef = ref(null);
+    const switchBtn = ref(null);
 
 
     const eve = ref(null)
@@ -27,6 +47,26 @@
     const btn = ref(null)
 
     const heroSection = ref(null)
+
+    const currentCar = computed(() => cars[currentCarIndex.value])
+
+    const prevCar = () => {
+        if (currentCarIndex.value === 0) {
+            currentCarIndex.value = cars.length - 1
+        } else {
+            currentCarIndex.value--
+        }
+        CategoryRef.value = cars[currentCarIndex.value].name
+    }
+
+    const nextCar = () => {
+        if (currentCarIndex.value === cars.length - 1) {
+            currentCarIndex.value = 0
+        } else {
+            currentCarIndex.value++
+        }
+        CategoryRef.value = cars[currentCarIndex.value].name
+    }
 
 
     const isHighPerformanceDevice = () => {
@@ -107,6 +147,11 @@
             y: 0,
             duration: 1,
             ease: "power2.inOut"
+        }, "-=0.3").to(switchBtn.value, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.inOut"
         }, "-=0.3")
     });
 
@@ -119,7 +164,6 @@
         ].filter(Boolean);
 
         if (zoom) {
-            // zoomIn = true → اخفِ العناصر
             $gsap.to(fadeTargets, {
                 opacity: 0,
                 y: 10,
@@ -127,7 +171,6 @@
                 ease: "power2.inOut"
             });
         } else {
-            // zoomIn = false → رجّعهم
             $gsap.to(fadeTargets, {
                 opacity: 1,
                 y: 0,
@@ -161,21 +204,34 @@
             </div>
 
             <div class="w-full h-full bg-transparent z-0">
+                <div v-if="!show3D" role="status" class="flex items-center justify-center h-full">
+                    <svg aria-hidden="true"
+                        class="inline w-10 h-10 w-8 h-8 text-neutral-tertiary animate-spin fill-brand"
+                        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor" />
+                        <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill" />
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
                 <ClientOnly>
                     <TresCanvas v-if="show3D" shadows window-size v-bind="rendererSettings"
                         :tone-mapping="currentToneMapping" :antialias="rendererSettings.antialias"
                         :alpha="rendererSettings.alpha" :power-preference="rendererSettings.powerPreference"
                         clearColor="#FFFFFF" @ready="onReady">
-                        <modelLoader :startCamera="moveCamera"
-                            :modelURL="'/models/free_porsche_911_carrera_4s/scene.gltf'"
-                            :position="{ x: 0, y: 0, z: 0 }" />
+                        <modelLoader :startCamera="moveCamera" :modelURL="currentCar.models"
+                            :position="currentCar.position" />
                     </TresCanvas>
                 </ClientOnly>
             </div>
 
             <CarCategories :selectedCategory="CategoryRef" ref="CatRef" />
 
-            <carDetails :startCamera="moveCamera" ref="DetailsRef" />
+            <CarDetails :startCamera="moveCamera" :selectedCarText="currentCar.description"
+                :selectedCarName="currentCar.name" :selectedCarPrice="currentCar.price" ref="DetailsRef" />
 
             <Header ref="header" />
 
@@ -193,6 +249,17 @@
          shadow-lg z-10" ref="zoomRef" @click="zoomIn = !zoomIn">
                 <component :is="Search" :size="20" />
             </button>
+
+            <div ref="switchBtn" class="absolute top-18 lg:top-4 left-4 flex gap-2 z-50 opacity-0 -translate-y-10">
+                <button type="button" @click="prevCar"
+                    class="text-gray-500 bg-transparent border border-gray-500 px-4 py-2 rounded-lg cursor-pointer hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur transition">
+                    <component :is="ArrowBigLeftDash" :size="20" />
+                </button>
+                <button type="button" @click="nextCar"
+                    class="text-gray-500 bg-transparent border border-gray-500 px-4 py-2 rounded-lg cursor-pointer hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur transition">
+                    <component :is="ArrowBigRightDash" :size="20" />
+                </button>
+            </div>
 
         </div>
 

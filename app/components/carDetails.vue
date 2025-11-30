@@ -1,6 +1,21 @@
 <script setup>
 const animationRef = ref(null)
 
+const props = defineProps({
+    selectedCarName: {
+        type: String,
+        required: true
+    },
+    selectedCarPrice: {
+        type: String,
+        required: true
+    },
+    selectedCarText: {
+        type: String,
+        required: true
+    }
+})
+
 const emit = defineEmits(['action'])
 
 defineExpose({ animationRef })
@@ -13,7 +28,7 @@ defineExpose({ animationRef })
       sm:inset-x-6 sm:bottom-6
       lg:inset-y-0 lg:top-2 lg:right-8 lg:left-auto
       w-auto lg:w-[380px] xl:w-[400px]
-      translate-x-[400px]
+      translate-x-[800px]
       bg-white
       rounded-2xl
       shadow-[0_4px_20px_rgba(0,0,0,0.07)]
@@ -25,7 +40,7 @@ defineExpose({ animationRef })
         <div class="h-full p-4 sm:p-6 lg:p-8 flex flex-col gap-4">
             <!-- Title -->
             <h2 class="text-base sm:text-lg lg:text-xl font-semibold">
-                Car's Name
+                {{props.selectedCarName}}
             </h2>
 
             <!-- Text -->
@@ -36,16 +51,7 @@ defineExpose({ animationRef })
           overflow-y-auto
           pr-1 sm:pr-2
         ">
-                Cars have revolutionized the way we live, offering freedom, convenience, and
-                the thrill of the open road. From sleek sports cars that hug curves at
-                breathtaking speeds to practical sedans designed for everyday comfort,
-                each vehicle embodies a blend of engineering, design, and technology.
-                Modern cars are no longer just transportation; they integrate advanced
-                safety systems, connectivity, and eco-friendly innovations, such as
-                electric and hybrid engines, to meet the demands of a changing world.
-                Whether admired for their performance, style, or efficiency, cars
-                continue to capture our imagination and play an integral role in shaping
-                our lives.
+        {{ props.selectedCarText }}
             </p>
 
             <!-- Button -->
